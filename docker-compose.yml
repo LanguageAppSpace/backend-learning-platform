@@ -1,0 +1,11 @@
+services:
+  web:
+    container_name: learning-platform
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ./django-setup.sh
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
