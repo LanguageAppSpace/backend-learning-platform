@@ -25,7 +25,7 @@ def password_reset_token_created(
         # pylint: disable=consider-using-f-string
         "reset_password_url": "{}?token={}".format(
             instance.request.build_absolute_uri(
-                reverse("authx:password_reset_confirm")
+                reverse("user:password_reset_confirm")
             ),
             reset_password_token.key,
         ),
@@ -39,9 +39,9 @@ def password_reset_token_created(
     )
 
     msg = EmailMessage(
-        f"Travel Planner: Password reset for {context['email']}",
+        f"Password reset for {context['email']}",
         email_msg,
-        "admin@travel-planner.com",
+        "admin@admin.com",
         [reset_password_token.user.email],
     )
 

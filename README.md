@@ -47,7 +47,7 @@ Project will run on http://127.0.0.1:8000/
 ### docker-compose
 Building Docker Image
 <br>
-` docker-compose build --no-cache`
+` docker-compose build --no-cache `
 <br>
 Running Docker Container
 <br>
