@@ -210,6 +210,7 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_USE_SESSIONS = False

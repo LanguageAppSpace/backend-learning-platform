@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.contrib.auth import logout, get_user_model
 
 from rest_framework.views import APIView
@@ -38,7 +37,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
     def perform_create(self, serializer):
