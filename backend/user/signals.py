@@ -24,9 +24,7 @@ def password_reset_token_created(
         "email": reset_password_token.user.email,
         # pylint: disable=consider-using-f-string
         "reset_password_url": "{}?token={}".format(
-            instance.request.build_absolute_uri(
-                reverse("user:password_reset_confirm")
-            ),
+            instance.request.build_absolute_uri(reverse("user:password_reset_confirm")),
             reset_password_token.key,
         ),
     }

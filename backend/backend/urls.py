@@ -32,5 +32,6 @@ urlpatterns = [
         "swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
     ),
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("flashcards/", include("flashcards.urls", namespace="flashcards")),
     path("user/", include("user.urls", namespace="user")),
 ]
