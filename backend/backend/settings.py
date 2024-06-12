@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "flashcards",
     "user",
     "rest_framework",
     "drf_spectacular",
