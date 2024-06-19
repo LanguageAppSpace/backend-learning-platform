@@ -23,8 +23,8 @@ class PhrasePairUpdateView(generics.UpdateAPIView):
         pair_id = self.kwargs["pair_id"]
         try:
             return self.queryset.get(id=pair_id, lesson_id=lesson_id)
-        except PhrasePair.DoesNotExist:
-            raise Http404("Phrase pair does not exist.")
+        except PhrasePair.DoesNotExist as exc:
+            raise Http404("Phrase pair does not exist.") from exc
 
 
 class PhrasePairDeleteView(generics.DestroyAPIView):
@@ -35,8 +35,8 @@ class PhrasePairDeleteView(generics.DestroyAPIView):
         pair_id = self.kwargs["pair_id"]
         try:
             return self.queryset.get(id=pair_id, lesson_id=lesson_id)
-        except PhrasePair.DoesNotExist:
-            raise Http404("Phrase pair does not exist.")
+        except PhrasePair.DoesNotExist as exc:
+            raise Http404("Phrase pair does not exist.") from exc
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()

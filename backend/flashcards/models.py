@@ -6,7 +6,7 @@ class Lesson(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.title
+        return f"Title: {self.title}"
 
 
 class PhrasePair(models.Model):
