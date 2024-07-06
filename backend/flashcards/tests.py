@@ -22,6 +22,9 @@ class LessonViewSetTests(APITestCase):
             "phrase_pairs": [
                 {"phrase_one": "Hello", "phrase_two": "Hola"},
                 {"phrase_one": "Goodbye", "phrase_two": "Adiós"},
+                {"phrase_one": "Thank you", "phrase_two": "Gracias"},
+                {"phrase_one": "Please", "phrase_two": "Por favor"},
+                {"phrase_one": "Yes", "phrase_two": "Sí"},
             ],
         }
         self.lesson = Lesson.objects.create(
@@ -37,7 +40,7 @@ class LessonViewSetTests(APITestCase):
         response = self.client.post(url, self.lesson_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Lesson.objects.count(), 2)
-        self.assertEqual(PhrasePair.objects.count(), 3)
+        self.assertEqual(PhrasePair.objects.count(), 6)
 
     def test_get_lesson_list(self):
         url = reverse("flashcards:lesson-list")
@@ -60,6 +63,31 @@ class LessonViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Lesson.objects.count(), 0)
         self.assertEqual(PhrasePair.objects.count(), 0)
+
+    def test_lesson_progress(self):
+        lesson = Lesson.objects.create(
+            title="Progress Lesson", description="A lesson to test progress"
+        )
+        phrases = [
+            {"phrase_one": "Phrase 1", "phrase_two": "Frase 1", "is_learned": True},
+            {"phrase_one": "Phrase 2", "phrase_two": "Frase 2", "is_learned": True},
+            {"phrase_one": "Phrase 3", "phrase_two": "Frase 3", "is_learned": False},
+            {"phrase_one": "Phrase 4", "phrase_two": "Frase 4", "is_learned": False},
+            {"phrase_one": "Phrase 5", "phrase_two": "Frase 5", "is_learned": False},
+        ]
+        for phrase in phrases:
+            PhrasePair.objects.create(
+                lesson=lesson,
+                phrase_one=phrase["phrase_one"],
+                phrase_two=phrase["phrase_two"],
+                is_learned=phrase["is_learned"],
+            )
+
+        url = reverse("flashcards:lesson-detail", kwargs={"pk": lesson.id})
+        self.client.force_login(self.user)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["progress"], 40)
 
 
 class PhrasePairUpdateViewTests(APITestCase):
