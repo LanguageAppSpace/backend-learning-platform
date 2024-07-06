@@ -6,15 +6,19 @@ from .models import Lesson, PhrasePair
 class PhrasePairSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhrasePair
-        fields = ["id", "phrase_one", "phrase_two"]
+        fields = ["id", "phrase_one", "phrase_two", "is_learned"]
 
 
 class LessonSerializer(serializers.ModelSerializer):
     phrase_pairs = PhrasePairSerializer(many=True)
+    progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
-        fields = ["id", "title", "description", "phrase_pairs"]
+        fields = ["id", "title", "description", "phrase_pairs", "progress"]
+
+    def get_progress(self, obj):
+        return obj.calculate_progress()
 
     def create(self, validated_data):
         phrase_pairs_data = validated_data.pop("phrase_pairs", [])
@@ -42,6 +46,9 @@ class LessonSerializer(serializers.ModelSerializer):
                         )
                         phrase_pair.phrase_two = phrase_pair_data.get(
                             "phrase_two", phrase_pair.phrase_two
+                        )
+                        phrase_pair.is_learned = phrase_pair_data.get(
+                            "is_learned", phrase_pair.is_learned
                         )
                         phrase_pair.save()
                     except PhrasePair.DoesNotExist:
