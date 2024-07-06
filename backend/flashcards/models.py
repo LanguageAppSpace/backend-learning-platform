@@ -13,7 +13,7 @@ class Lesson(models.Model):
         if total_pairs == 0:
             return 0
         learned_pairs = self.phrase_pairs.filter(is_learned=True).count()
-        return (learned_pairs / total_pairs) * 100
+        return round((learned_pairs / total_pairs) * 100, 2)
 
 
 class PhrasePair(models.Model):
