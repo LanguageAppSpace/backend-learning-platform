@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Learning Platform{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <header>
+            <h1>Welcome!</h1>
+            <p>This is the main page.</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'swagger-ui' %}">Swagger Documentation</a></li>
+                <li><a href="{% url 'readme_view' %}">Readme</a></li>
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}

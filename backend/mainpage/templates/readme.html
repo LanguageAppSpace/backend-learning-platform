@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdown_extras %}
+
+{% block title %}Learning Platform - README{% endblock %}
+
+{% block content %}
+
+    <div class="container">{{ readme_content|markdown }}</div>
+
+{% endblock %}
