@@ -39,33 +39,25 @@ The flashcards functionality enriches the user experience by offering a comprehe
 <ol>
 1. Clone the repository
 <br>
-<code> git clone https://github.com/Ewa-Anna/backend-learning-platform  </code>
-
+<code>git clone https://github.com/Ewa-Anna/backend-learning-platform</code>
 <br>
 2. Change the directory
 <br>
-<code> cd backend </code>
+<code>cd backend</code>
 <br>
-
 3. Install dependencies
 <br>
-<code> 
-   pip install -r requirements.txt
-</code>
+<code>pip install -r requirements.txt</code>
 <br>
 4. Apply database migrations
 <br>
-<code> 
-   python manage.py makemigrations
-
-   python manage.py migrate
-</code>
+<code>python manage.py makemigrations</code>
+<br>
+<code>python manage.py migrate</code>
 <br>
 5. Run the project
 <br>
-<code> 
-   python manage.py runserver
-   </code>
+<code>python manage.py runserver</code>
 <br>
 </ol>
 Project will run on http://127.0.0.1:8000/
