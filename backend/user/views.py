@@ -1,4 +1,5 @@
 from django.contrib.auth import logout, get_user_model
+from django.middleware.csrf import get_token
 
 from rest_framework.views import APIView
 from rest_framework import generics, status
@@ -31,9 +32,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        csrf_token = request.META.get("CSRF_COOKIE")
-        response.data["csrf_token"] = csrf_token
-        return response
+        response_data = response.data
+
+        csrf_token = get_token(request)
+        response_data['csrf_token'] = csrf_token
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class RegisterView(generics.CreateAPIView):
