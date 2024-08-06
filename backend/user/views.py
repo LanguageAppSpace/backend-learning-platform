@@ -35,7 +35,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         response_data = response.data
 
         csrf_token = get_token(request)
-        response_data['csrf_token'] = csrf_token
+        response_data["csrf_token"] = csrf_token
 
         return Response(response_data, status=status.HTTP_200_OK)
 
