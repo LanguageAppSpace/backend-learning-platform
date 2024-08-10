@@ -1,6 +1,7 @@
 from django.contrib.auth import logout, get_user_model
 from django.middleware.csrf import get_token
 
+from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -61,13 +62,18 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user.profile
-
     def get_serializer_class(self):
         if self.request.method in ("PUT", "PATCH"):
             return ProfileUpdateSerializer
         return ProfileSerializer
+
+    def get_object(self):
+        user_id = self.request.user.id
+        try:
+            profile = Profile.objects.get(user_id=user_id)
+            return profile
+        except Profile.DoesNotExist:
+            raise NotFound("Profile not found")
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -81,15 +87,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         )
 
     def partial_update(self, request, *args, **kwargs):
-        response = super().partial_update(request, *args, **kwargs)
-        profile_data = response.data
-        return Response(
-            {
-                "success": True,
-                "message": "Profile has been updated successfully",
-                "result": profile_data,
-            }
-        )
+        return self.update(request, *args, **kwargs)
 
 
 class LogoutAPIView(APIView):
