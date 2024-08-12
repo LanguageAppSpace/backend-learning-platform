@@ -72,8 +72,8 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         try:
             profile = Profile.objects.get(user_id=user_id)
             return profile
-        except Profile.DoesNotExist:
-            raise NotFound("Profile not found")
+        except Profile.DoesNotExist as exc:
+            raise NotFound("Profile not found") from exc
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
