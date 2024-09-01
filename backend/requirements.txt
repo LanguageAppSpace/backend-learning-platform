@@ -30,7 +30,7 @@ PyJWT==2.9.0
 pylint==3.2.6
 PyYAML==6.0.2
 referencing==0.35.1
-rpds-py==0.19.1
+rpds-py==0.20.0
 sqlparse==0.5.1
 tomli==2.0.1
 tomlkit==0.13.0
