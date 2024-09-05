@@ -2,7 +2,9 @@ from django.http import Http404
 
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
+from user.models import CustomUser
 from .models import Lesson, PhrasePair
 from .serializers import LessonSerializer, PhrasePairSerializer
 
@@ -11,6 +13,20 @@ class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     http_method_names = ["get", "post", "delete", "head", "options", "patch"]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Lesson.objects.filter(user=self.request.user.id)
+
+    def perform_create(self, serializer):
+        user_id = self.request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        serializer.save(user=user)
+
+    def perform_update(self, serializer):
+        user_id = self.request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        serializer.save(user=user)
 
 
 class PhrasePairUpdateView(generics.UpdateAPIView):

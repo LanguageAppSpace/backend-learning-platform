@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "flashcards",
     "mainpage",
+    "stats",
     "user",
     "rest_framework",
     "drf_spectacular",

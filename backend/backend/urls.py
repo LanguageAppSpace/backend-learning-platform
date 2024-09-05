@@ -34,5 +34,6 @@ urlpatterns = [
     ),
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("flashcards/", include("flashcards.urls", namespace="flashcards")),
+    path("stats/", include("stats.urls", namespace="stats")),
     path("user/", include("user.urls", namespace="user")),
 ]
