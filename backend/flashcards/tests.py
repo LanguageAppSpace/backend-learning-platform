@@ -16,6 +16,7 @@ class LessonViewSetTests(APITestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpassword"
         )
+        self.client.force_login(self.user)
         self.lesson_data = {
             "title": "Sample Lesson",
             "description": "A sample lesson description",
@@ -28,7 +29,9 @@ class LessonViewSetTests(APITestCase):
             ],
         }
         self.lesson = Lesson.objects.create(
-            title="Existing Lesson", description="Existing lesson description"
+            title="Existing Lesson",
+            description="Existing lesson description",
+            user=self.user,
         )
         self.phrase_pair = PhrasePair.objects.create(
             lesson=self.lesson, phrase_one="Good Morning", phrase_two="Buenos Días"
@@ -36,7 +39,6 @@ class LessonViewSetTests(APITestCase):
 
     def test_create_lesson(self):
         url = reverse("flashcards:lesson-list")
-        self.client.force_login(self.user)
         response = self.client.post(url, self.lesson_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Lesson.objects.count(), 2)
@@ -44,21 +46,18 @@ class LessonViewSetTests(APITestCase):
 
     def test_get_lesson_list(self):
         url = reverse("flashcards:lesson-list")
-        self.client.force_login(self.user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
 
     def test_get_lesson_detail(self):
         url = reverse("flashcards:lesson-detail", kwargs={"pk": self.lesson.id})
-        self.client.force_login(self.user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], self.lesson.title)
 
     def test_delete_lesson(self):
         url = reverse("flashcards:lesson-detail", kwargs={"pk": self.lesson.id})
-        self.client.force_login(self.user)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Lesson.objects.count(), 0)
@@ -66,7 +65,9 @@ class LessonViewSetTests(APITestCase):
 
     def test_lesson_progress(self):
         lesson = Lesson.objects.create(
-            title="Progress Lesson", description="A lesson to test progress"
+            title="Progress Lesson",
+            description="A lesson to test progress",
+            user=self.user,
         )
         phrases = [
             {"phrase_one": "Phrase 1", "phrase_two": "Frase 1", "is_learned": True},
@@ -84,7 +85,6 @@ class LessonViewSetTests(APITestCase):
             )
 
         url = reverse("flashcards:lesson-detail", kwargs={"pk": lesson.id})
-        self.client.force_login(self.user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["progress"], 40)
@@ -97,7 +97,9 @@ class PhrasePairUpdateViewTests(APITestCase):
             username="testuser", password="testpassword"
         )
         self.lesson = Lesson.objects.create(
-            title="Lesson with PhrasePair", description="Lesson description"
+            title="Lesson with PhrasePair",
+            description="Lesson description",
+            user=self.user,
         )
         self.phrase_pair = PhrasePair.objects.create(
             lesson=self.lesson, phrase_one="Yes", phrase_two="Sí"
@@ -124,7 +126,9 @@ class PhrasePairDeleteViewTests(APITestCase):
             username="testuser", password="testpassword"
         )
         self.lesson = Lesson.objects.create(
-            title="Lesson with PhrasePair", description="Lesson description"
+            title="Lesson with PhrasePair",
+            description="Lesson description",
+            user=self.user,
         )
         self.phrase_pair = PhrasePair.objects.create(
             lesson=self.lesson, phrase_one="Yes", phrase_two="Sí"

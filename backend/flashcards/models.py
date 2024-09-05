@@ -1,7 +1,11 @@
 from django.db import models
+from user.models import CustomUser
 
 
 class Lesson(models.Model):
+    user = models.ForeignKey(
+        CustomUser, related_name="lessons", on_delete=models.CASCADE
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
 
