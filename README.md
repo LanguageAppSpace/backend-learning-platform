@@ -6,7 +6,6 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Tests](#tests)
-- [Docker](#docker-compose)
 - [API](#api)
 - [Tools](#technologies-and-frameworks)
 - [Contributions](#contributions)
@@ -39,7 +38,7 @@ The flashcards functionality enriches the user experience by offering a comprehe
 <ol>
 1. Clone the repository
 <br>
-<code>git clone https://github.com/Ewa-Anna/backend-learning-platform</code>
+<code>git clone https://github.com/ewasol/backend-learning-platform</code>
 <br>
 2. Change the directory
 <br>
@@ -61,16 +60,6 @@ The flashcards functionality enriches the user experience by offering a comprehe
 <br>
 </ol>
 Project will run on http://127.0.0.1:8000/
-
-
-### docker-compose
-Building Docker Image
-<br>
-` docker-compose build --no-cache `
-<br>
-Running Docker Container
-<br>
-` docker-compose up -d `
 
 
 ## API
@@ -101,18 +90,14 @@ Run all tests
     - drf-yasg
 
 - Databases
-    - For Dev
 
-        [![SQLite](https://skillicons.dev/icons?i=sqlite)](https://skillicons.dev)
-
-    - For Prod
+    - MySQL
     
-        [![PostgreSQL](https://skillicons.dev/icons?i=postgres)](https://skillicons.dev)
+        [![MySQL](https://skillicons.dev/icons?i=mysql)](https://skillicons.dev)
 
 - Other
 
-    [![VisualStudio](https://skillicons.dev/icons?i=vscode)](https://skillicons.dev)
-    [![Docker](https://skillicons.dev/icons?i=docker)](https://skillicons.dev)
+    [![PyCharm](https://skillicons.dev/icons?i=pycharm)](https://skillicons.dev)
     [![Postman](https://skillicons.dev/icons?i=postman)](https://skillicons.dev)
 
 
