@@ -1,4 +1,5 @@
 from django.db import models
+from typing import Union
 from user.models import CustomUser
 
 
@@ -12,7 +13,7 @@ class Lesson(models.Model):
     def __str__(self):
         return f"Title: {self.title}"
 
-    def calculate_progress(self):
+    def calculate_progress(self) -> Union[int, float]:
         total_pairs = self.phrase_pairs.count()
         if total_pairs == 0:
             return 0
