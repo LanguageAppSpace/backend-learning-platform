@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from typing import Union
 
 from .models import Lesson, PhrasePair
 
@@ -17,7 +18,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ["id", "title", "description", "phrase_pairs", "progress"]
 
-    def get_progress(self, obj):
+    def get_progress(self, obj) -> Union[int, float]:
         return obj.calculate_progress()
 
     def create(self, validated_data):
@@ -31,7 +32,9 @@ class LessonSerializer(serializers.ModelSerializer):
         phrase_pairs_data = validated_data.pop("phrase_pairs", None)
 
         instance.title = validated_data.get("title", instance.title)
-        instance.description = validated_data.get("description", instance.description)
+        instance.description = validated_data.get(
+            "description", instance.description
+        )
         instance.save()
 
         if phrase_pairs_data is not None:
@@ -52,8 +55,12 @@ class LessonSerializer(serializers.ModelSerializer):
                         )
                         phrase_pair.save()
                     except PhrasePair.DoesNotExist:
-                        PhrasePair.objects.create(lesson=instance, **phrase_pair_data)
+                        PhrasePair.objects.create(
+                            lesson=instance, **phrase_pair_data
+                        )
                 else:
-                    PhrasePair.objects.create(lesson=instance, **phrase_pair_data)
+                    PhrasePair.objects.create(
+                        lesson=instance, **phrase_pair_data
+                    )
 
         return instance

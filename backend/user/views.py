@@ -94,7 +94,8 @@ class LogoutAPIView(APIView):
     def post(self, request):
         logout(request)
         return Response(
-            {"success": True, "message": "Logout successful"}, status=status.HTTP_200_OK
+            {"success": True, "message": "Logout successful"},
+            status=status.HTTP_200_OK
         )
 
 
@@ -133,7 +134,8 @@ class DeactivateAccountView(APIView):
         user.save()
 
         return Response(
-            {"message": "Account deactivated successfully."}, status=status.HTTP_200_OK
+            {"message": "Account deactivated successfully."},
+            status=status.HTTP_200_OK
         )
 
 
@@ -159,7 +161,8 @@ class PasswordResetConfirmAPIView(APIView):
         user.save()
 
         return Response(
-            {"success": "Password reset successfully"}, status=status.HTTP_200_OK
+            {"success": "Password reset successfully"},
+            status=status.HTTP_200_OK
         )
 
 
@@ -168,5 +171,7 @@ class UserListView(generics.ListAPIView):
     pagination_class = NoPagination
 
     def get_queryset(self):
-        queryset = CustomUser.objects.all().order_by("first_name", "last_name")
+        queryset = CustomUser.objects.all().order_by(
+            "first_name", "last_name"
+        )
         return queryset
