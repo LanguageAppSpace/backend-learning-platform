@@ -9,6 +9,7 @@ from user.models import CustomUser
 
 class UserStatisticsView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = None
 
     def get(self, request, *args, **kwargs):
         user_id = request.user.id

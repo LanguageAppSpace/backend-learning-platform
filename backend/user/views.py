@@ -91,6 +91,8 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 
 class LogoutAPIView(APIView):
+    serializer_class = None
+
     def post(self, request):
         logout(request)
         return Response(
@@ -125,6 +127,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class DeactivateAccountView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = None
 
     def post(self, request):
         user_id = request.user.id

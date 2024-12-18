@@ -45,6 +45,7 @@ class PhrasePairUpdateView(generics.UpdateAPIView):
 
 class PhrasePairDeleteView(generics.DestroyAPIView):
     queryset = PhrasePair.objects.all()
+    serializer_class = None
 
     def get_object(self):
         lesson_id = self.kwargs["lesson_id"]
