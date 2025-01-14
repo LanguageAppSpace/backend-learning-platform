@@ -9,26 +9,25 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import pymysql
+pymysql.install_as_MySQLdb()
 
 import os
 
+from decouple import config
 from pathlib import Path
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ENVIRONMENT = config("DJANGO_ENV", default="development")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-u+t9vn016lc2ej0))+d6f0k&0=%84l_m$o4tb7zam*@z9$y1c!"
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -89,12 +88,28 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if ENVIRONMENT == "development":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": config("DB_NAME", default="local_db_name"),
+            "USER": config("DB_USER", default="local_db_user"),
+            "PASSWORD": config("DB_PASSWORD", default="local_db_password"),
+            "HOST": "db",
+            "PORT": config("DB_PORT", default="3306"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            # "ENGINE": "django.db.backends.mysql",
+            # "NAME": config("DB_NAME", default="hosted_db_name"),
+            # "USER": config("DB_USER", default="hosted_db_user"),
+            # "PASSWORD": config("DB_PASSWORD", default="hosted_db_password"),
+            # "HOST": config("DB_HOST", default="hosted_db_host"),
+            # "PORT": config("DB_PORT", default="3306"),
+        }
+    }
 
 
 # Password validation
@@ -214,18 +229,24 @@ AUTH_USER_MODEL = "user.CustomUser"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://0.0.0.0:8000",
+]
+
+CSRF_ALLOWED_ORIGINS = [
+    'http://0.0.0.0:8000',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    'http://0.0.0.0:8000',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_USE_SESSIONS = False
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = ENVIRONMENT != "development"
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None" if ENVIRONMENT != "development" else "Lax"
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -254,6 +275,7 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
+    "http://0.0.0.0:8000",
 ]
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
