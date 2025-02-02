@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: learning-platform
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ./django-setup.sh
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_ENV=production
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=15883
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: always
