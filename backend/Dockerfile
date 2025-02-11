@@ -10,6 +10,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt --no-cache-dir
 
+COPY django-setup.sh /code/django-setup.sh
 COPY . .
 
 EXPOSE 8000
