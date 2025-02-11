@@ -102,12 +102,12 @@ if ENVIRONMENT == "development":
 else:
     DATABASES = {
         "default": {
-            # "ENGINE": "django.db.backends.mysql",
-            # "NAME": config("DB_NAME", default="hosted_db_name"),
-            # "USER": config("DB_USER", default="hosted_db_user"),
-            # "PASSWORD": config("DB_PASSWORD", default="hosted_db_password"),
-            # "HOST": config("DB_HOST", default="hosted_db_host"),
-            # "PORT": config("DB_PORT", default="3306"),
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("DB_NAME", "hosted_db_name"),
+            "USER": os.getenv("DB_USER", "hosted_db_user"),
+            "PASSWORD": os.getenv("DB_PASSWORD", "hosted_db_password"),
+            "HOST": os.getenv("DB_HOST", "hosted_db_host"),
+            "PORT": os.getenv("DB_PORT", "3306"),
         }
     }
 
@@ -230,15 +230,18 @@ AUTH_USER_MODEL = "user.CustomUser"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
+    "http://backend-learning-platform-production.up.railway.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
+    "http://backend-learning-platform-production.up.railway.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
+    "http://backend-learning-platform-production.up.railway.app"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -276,6 +279,7 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
+    "http://backend-learning-platform-production.up.railway.app"
 ]
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
