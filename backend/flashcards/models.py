@@ -3,6 +3,7 @@ from user.models import CustomUser
 
 
 class Lesson(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(
         CustomUser, related_name="lessons", on_delete=models.CASCADE
     )
@@ -21,6 +22,7 @@ class Lesson(models.Model):
 
 
 class PhrasePair(models.Model):
+    id = models.AutoField(primary_key=True)
     lesson = models.ForeignKey(
         Lesson, related_name="phrase_pairs", on_delete=models.CASCADE
     )

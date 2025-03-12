@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 
 
 class CustomUser(AbstractUser, PermissionsMixin):
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
@@ -21,6 +22,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
 
 class Profile(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     photo = models.URLField(blank=True)
     birthdate = models.DateField(blank=True, null=True, verbose_name="Date of Birth")

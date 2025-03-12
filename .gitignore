@@ -88,3 +88,5 @@ dmypy.json
 cython_debug/
 
 .idea/
+.env.dev
+**/.DS_Store

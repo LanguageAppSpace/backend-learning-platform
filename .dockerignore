@@ -1,5 +1,5 @@
 # Virtual environment and VSC files
-venv
+/venv
 .vscode
 
 # Django and Python files
@@ -8,3 +8,6 @@ __pycache__
 
 .gitignore
 .git
+
+LICENSE
+README.md
