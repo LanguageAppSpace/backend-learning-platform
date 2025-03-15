@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     env_file:
-      - .env
+      - .env.dev
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -12,6 +12,11 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
 
   web:
     container_name: learning-platform
@@ -20,8 +25,9 @@ services:
       dockerfile: Dockerfile
     command: ./django-setup.sh
     volumes:
-      - .:/code
+      - ./backend:/code
     environment:
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_ENV=development
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -30,6 +36,11 @@ services:
       - DB_PORT=3306
     ports:
       - "8000:8000"
+    env_file:
+      - .env.dev
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   mysql_data:

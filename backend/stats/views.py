@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from flashcards.models import Lesson, PhrasePair
 from user.models import CustomUser
+from .serializers import UserStatisticsSerializer
 
 
 class UserStatisticsView(APIView):
@@ -26,5 +27,6 @@ class UserStatisticsView(APIView):
             "flashcards_count": flashcards_count,
             "learned_flashcards_count": learned_flashcards_count,
         }
+        serializer = UserStatisticsSerializer(user_stats)
 
-        return Response(user_stats, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)

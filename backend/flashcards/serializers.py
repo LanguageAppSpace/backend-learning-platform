@@ -17,7 +17,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ["id", "title", "description", "phrase_pairs", "progress"]
 
-    def get_progress(self, obj):
+    def get_progress(self, obj) -> float:
         return obj.calculate_progress()
 
     def create(self, validated_data):

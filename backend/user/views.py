@@ -4,6 +4,7 @@ from django.middleware.csrf import get_token
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework import generics, status
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -90,7 +91,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
-class LogoutAPIView(APIView):
+class LogoutAPIView(GenericAPIView):
     def post(self, request):
         logout(request)
         return Response(
@@ -123,7 +124,7 @@ class ChangePasswordView(generics.UpdateAPIView):
         serializer.save()
 
 
-class DeactivateAccountView(APIView):
+class DeactivateAccountView(GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
