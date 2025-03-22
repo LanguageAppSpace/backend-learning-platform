@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     env_file:
-      - .env.dev
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -26,18 +26,19 @@ services:
     command: ./django-setup.sh
     volumes:
       - ./backend:/code
+    env_file:
+      - .env
     environment:
       - SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_ENV=development
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_HOST=db
       - DB_PORT=3306
     ports:
       - "8000:8000"
-    env_file:
-      - .env.dev
     depends_on:
       db:
         condition: service_healthy

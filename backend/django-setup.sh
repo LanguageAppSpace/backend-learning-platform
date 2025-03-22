@@ -1,12 +1,22 @@
 #!/bin/bash
 
 echo "Applying database migrations..."
-python manage.py makemigrations --check
-python manage.py migrate
+python manage.py migrate --noinput
+
+if [ "$DJANGO_ENV" = "development" ]; then
+    echo "Running makemigrations (only in development)..."
+    python manage.py makemigrations
+fi
 
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo "Django setup complete!"
 
-python manage.py runserver 0.0.0.0:8000
+if [ "$DJANGO_ENV" = "development" ]; then
+    echo "Starting Django development server..."
+    exec python manage.py runserver 0.0.0.0:8000
+else
+    echo "Starting Gunicorn server..."
+    exec gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 4
+fi

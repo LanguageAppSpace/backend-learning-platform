@@ -15,8 +15,4 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-RUN chmod +x /code/django-setup.sh
-
 EXPOSE 8000
-
-CMD ["./django-setup.sh"]
