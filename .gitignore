@@ -89,4 +89,5 @@ cython_debug/
 
 .idea/
 .env.dev
+.envdb
 **/.DS_Store

@@ -27,7 +27,13 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "0.0.0.0",
+    "127.0.0.1",
+    "localhost",
+    "backend-image-prod-240493807402.us-east1.run.app",
+    "backend-image-prod-xiy3m45uuq-ue.a.run.app"
+]
 
 # Application definition
 
@@ -48,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "whitenoise.runserver_nostatic"
 ]
 
 MIDDLEWARE = [
@@ -59,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -105,7 +113,8 @@ else:
             "NAME": os.getenv("DB_NAME", "hosted_db_name"),
             "USER": os.getenv("DB_USER", "hosted_db_user"),
             "PASSWORD": os.getenv("DB_PASSWORD", "hosted_db_password"),
-            "HOST": os.getenv("DB_HOST", "hosted_db_host"),
+            # "HOST": os.getenv("DB_HOST", "hosted_db_host"),
+            'HOST': '127.0.0.1',
             "PORT": os.getenv("DB_PORT", "3306"),
         }
     }
@@ -230,18 +239,18 @@ AUTH_USER_MODEL = "user.CustomUser"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "http://backend-learning-platform-production.up.railway.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
-    "http://backend-learning-platform-production.up.railway.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
-    "http://backend-learning-platform-production.up.railway.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -279,7 +288,7 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "http://backend-learning-platform-production.up.railway.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app"
 ]
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
