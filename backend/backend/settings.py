@@ -239,18 +239,21 @@ AUTH_USER_MODEL = "user.CustomUser"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "https://backend-image-prod-240493807402.us-east1.run.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "https://project-language-app.netlify.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
-    "https://backend-image-prod-240493807402.us-east1.run.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "https://project-language-app.netlify.app/ "
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
-    "https://backend-image-prod-240493807402.us-east1.run.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "https://project-language-app.netlify.app/ "
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
