@@ -113,8 +113,7 @@ else:
             "NAME": os.getenv("DB_NAME", "hosted_db_name"),
             "USER": os.getenv("DB_USER", "hosted_db_user"),
             "PASSWORD": os.getenv("DB_PASSWORD", "hosted_db_password"),
-            # "HOST": os.getenv("DB_HOST", "hosted_db_host"),
-            'HOST': '127.0.0.1',
+            "HOST": os.getenv("DB_HOST", "hosted_db_host"),
             "PORT": os.getenv("DB_PORT", "3306"),
         }
     }
@@ -240,20 +239,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
     "https://backend-image-prod-240493807402.us-east1.run.app",
-    "https://project-language-app.netlify.app"
+    "https://project-language-app.netlify.app",
+    "https://staging-project-language-app.netlify.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
     "https://backend-image-prod-240493807402.us-east1.run.app",
-    "https://project-language-app.netlify.app/ "
+    "https://project-language-app.netlify.app",
+    "https://staging-project-language-app.netlify.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
     "https://backend-image-prod-240493807402.us-east1.run.app",
-    "https://project-language-app.netlify.app/ "
+    "https://project-language-app.netlify.app",
+    "https://staging-project-language-app.netlify.app"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -291,7 +293,8 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "https://backend-image-prod-240493807402.us-east1.run.app"
+    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "https://staging-project-language-app.netlify.app"
 ]
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
