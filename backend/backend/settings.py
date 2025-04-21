@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "localhost",
-    "116.203.33.149"
+    "language-learning-backend.com",
+    "www.language-learning-backend.com"
 ]
 
 # Application definition
@@ -237,14 +238,16 @@ AUTH_USER_MODEL = "user.CustomUser"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "http://116.203.33.149",
+    "https://language-learning-backend.com",
+    "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
-    "http://116.203.33.149",
+    "https://language-learning-backend.com",
+    "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
@@ -252,7 +255,8 @@ CSRF_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
-    "http://116.203.33.149",
+    "https://language-learning-backend.com",
+    "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
@@ -292,7 +296,8 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "http://116.203.33.149",
+    "https://language-learning-backend.com",
+    "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
