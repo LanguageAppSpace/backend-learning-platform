@@ -31,8 +31,7 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "localhost",
-    "backend-image-prod-240493807402.us-east1.run.app",
-    "backend-image-prod-xiy3m45uuq-ue.a.run.app"
+    "116.203.33.149"
 ]
 
 # Application definition
@@ -238,14 +237,14 @@ AUTH_USER_MODEL = "user.CustomUser"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "116.203.33.149",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
 
 CSRF_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
-    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "116.203.33.149",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
@@ -253,7 +252,7 @@ CSRF_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     'http://0.0.0.0:8000',
-    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "116.203.33.149",
     "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
@@ -293,7 +292,8 @@ CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://0.0.0.0:8000",
-    "https://backend-image-prod-240493807402.us-east1.run.app",
+    "116.203.33.149",
+    "https://project-language-app.netlify.app",
     "https://staging-project-language-app.netlify.app"
 ]
 

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Waiting for MySQL..."
+until mysqladmin ping -h"$DB_HOST" -P"$DB_PORT" --silent; do
+  sleep 2
+done
+
 echo "Applying database migrations..."
 python manage.py migrate --noinput
 
