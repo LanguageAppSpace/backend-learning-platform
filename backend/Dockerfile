@@ -9,7 +9,8 @@ ENV DOCKER_BUILDKIT=1
 WORKDIR /code
 
 RUN apt-get update && \
-    apt-get install -y netcat build-essential pkg-config libssl-dev libmariadb-dev && \
+    apt-get install -y netcat-openbsd build-essential pkg-config libssl-dev default-libmysqlclient-dev && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
