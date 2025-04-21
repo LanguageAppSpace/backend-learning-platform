@@ -9,7 +9,7 @@ ENV DOCKER_BUILDKIT=1
 WORKDIR /code
 
 RUN apt-get update && \
-    apt-get install -y build-essential pkg-config libssl-dev libmariadb-dev && \
+    apt-get install -y netcat build-essential pkg-config libssl-dev libmariadb-dev && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

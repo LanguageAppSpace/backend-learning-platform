@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "Waiting for MySQL..."
-until mysqladmin ping -h"$DB_HOST" -P"$DB_PORT" --silent; do
-  sleep 2
+until nc -z "$DB_HOST" "$DB_PORT"; do
+  sleep 1
 done
 
 echo "Applying database migrations..."
