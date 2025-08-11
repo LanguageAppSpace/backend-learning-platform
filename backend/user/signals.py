@@ -1,7 +1,7 @@
+import os
+
 from django.dispatch import receiver
 from django.core.mail import EmailMessage
-from django.urls import reverse
-
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from .utils import CustomTokenGenerator
@@ -24,7 +24,7 @@ def password_reset_token_created(
         "email": reset_password_token.user.email,
         # pylint: disable=consider-using-f-string
         "reset_password_url": "{}?token={}".format(
-            instance.request.build_absolute_uri(reverse("user:password_reset_confirm")),
+            "https://project-language-app.netlify.app/reset-password",
             reset_password_token.key,
         ),
     }
@@ -39,8 +39,7 @@ def password_reset_token_created(
     msg = EmailMessage(
         f"Password reset for {context['email']}",
         email_msg,
-        "admin@admin.com",
+        os.getenv("DEFAULT_FROM_EMAIL"),
         [reset_password_token.user.email],
     )
-
     msg.send()
