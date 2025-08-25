@@ -24,7 +24,7 @@ def password_reset_token_created(
         "email": reset_password_token.user.email,
         # pylint: disable=consider-using-f-string
         "reset_password_url": "{}?token={}".format(
-            "https://project-language-app.netlify.app/reset-password",
+            "https://staging-project-language-app.netlify.app/reset-password",
             reset_password_token.key,
         ),
     }
