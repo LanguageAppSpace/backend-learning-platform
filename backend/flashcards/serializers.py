@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Lesson, PhrasePair
+from .models import Lesson, PhrasePair, Section
 
 
 class PhrasePairSerializer(serializers.ModelSerializer):
@@ -12,10 +12,13 @@ class PhrasePairSerializer(serializers.ModelSerializer):
 class LessonSerializer(serializers.ModelSerializer):
     phrase_pairs = PhrasePairSerializer(many=True)
     progress = serializers.SerializerMethodField()
+    section = serializers.PrimaryKeyRelatedField(queryset=Section.objects.all())
 
     class Meta:
         model = Lesson
-        fields = ["id", "title", "description", "phrase_pairs", "progress"]
+        fields = [
+            "id", "section", "title", "description", "phrase_pairs", "progress"
+        ]
 
     def get_progress(self, obj) -> float:
         return obj.calculate_progress()
@@ -32,6 +35,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
         instance.title = validated_data.get("title", instance.title)
         instance.description = validated_data.get("description", instance.description)
+        instance.section = validated_data.get("section", instance.section)
         instance.save()
 
         if phrase_pairs_data is not None:
@@ -57,3 +61,15 @@ class LessonSerializer(serializers.ModelSerializer):
                     PhrasePair.objects.create(lesson=instance, **phrase_pair_data)
 
         return instance
+
+
+class SectionSerializer(serializers.ModelSerializer):
+    lessons = LessonSerializer(many=True, read_only=True)
+    progress = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Section
+        fields = ["id", "title", "description", "progress", "lessons"]
+
+    def get_progress(self, obj):
+        return obj.calculate_progress()

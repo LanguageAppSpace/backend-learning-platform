@@ -2,11 +2,12 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import LessonViewSet, PhrasePairUpdateView, PhrasePairDeleteView
+from .views import LessonViewSet, PhrasePairUpdateView, PhrasePairDeleteView, SectionViewSet
 
 
 router = DefaultRouter()
 router.register(r"lessons", LessonViewSet)
+router.register(r'sections', SectionViewSet)
 
 app_name = "flashcards"
 
