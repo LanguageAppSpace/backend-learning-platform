@@ -3,6 +3,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from user.models import CustomUser
 
+DEFAULT_SECTION_COLOR = "#FFFFFF"
+
 
 class Section(models.Model):
     id = models.AutoField(primary_key=True)
@@ -11,6 +13,7 @@ class Section(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+    color = models.CharField(max_length=20, default=DEFAULT_SECTION_COLOR)
 
     def __str__(self):
         return f"Section: {self.title}"
@@ -30,6 +33,12 @@ class Section(models.Model):
         Fetch all phrase pairs across all lessons in this section.
         """
         return PhrasePair.objects.filter(lesson__section=self)
+
+    def reset_progress(self):
+        """
+        Mark all flashcards in all lessons of this section as unlearned.
+        """
+        PhrasePair.objects.filter(lesson__section=self).update(is_learned=False)
 
 
 class Lesson(models.Model):
@@ -53,6 +62,9 @@ class Lesson(models.Model):
             return 0
         learned_pairs = self.phrase_pairs.filter(is_learned=True).count()
         return round((learned_pairs / total_pairs) * 100, 2)
+
+    def reset_progress(self):
+        self.phrase_pairs.update(is_learned=False)
 
 
 class PhrasePair(models.Model):
