@@ -35,9 +35,16 @@ class LessonViewSet(viewsets.ModelViewSet):
         serializer.save(user=user, section=section)
 
     def perform_update(self, serializer):
-        user_id = self.request.user.id
-        user = CustomUser.objects.get(id=user_id)
-        serializer.save(user=user)
+        serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=["post"], url_path="reset-progress")
+    def reset_progress(self, request, pk=None):
+        lesson = self.get_object()
+        lesson.reset_progress()
+        return Response(
+            {"message": f"Progress for lesson '{lesson.title}' reset to 0%"},
+            status=status.HTTP_200_OK
+        )
 
 
 class PhrasePairUpdateView(generics.UpdateAPIView):
@@ -93,3 +100,15 @@ class SectionViewSet(viewsets.ModelViewSet):
         flashcards = section.get_all_phrase_pairs()
         serializer = PhrasePairSerializer(flashcards, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], url_path="reset-progress")
+    def reset_progress(self, request, pk=None):
+        """
+        Reset all flashcards in all lessons of this section.
+        """
+        section = self.get_object()
+        section.reset_progress()
+        return Response(
+            {"message": f"Progress for section '{section.title}' reset to 0%"},
+            status=status.HTTP_200_OK
+        )

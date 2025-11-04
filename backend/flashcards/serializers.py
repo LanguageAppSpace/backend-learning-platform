@@ -12,13 +12,25 @@ class PhrasePairSerializer(serializers.ModelSerializer):
 class LessonSerializer(serializers.ModelSerializer):
     phrase_pairs = PhrasePairSerializer(many=True)
     progress = serializers.SerializerMethodField()
-    section = serializers.PrimaryKeyRelatedField(queryset=Section.objects.all())
+    section = serializers.PrimaryKeyRelatedField(
+        queryset=Section.objects.none(),
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = Lesson
         fields = [
             "id", "section", "title", "description", "phrase_pairs", "progress"
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            self.fields["section"].queryset = Section.objects.filter(
+                user=request.user
+            )
 
     def get_progress(self, obj) -> float:
         return obj.calculate_progress()
@@ -69,7 +81,7 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        fields = ["id", "title", "description", "progress", "lessons"]
+        fields = ["id", "title", "description", "color", "progress", "lessons"]
 
     def get_progress(self, obj):
         return obj.calculate_progress()
