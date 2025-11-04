@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
     "localhost",
+    "116.203.33.149",
     "language-learning-backend.com",
     "www.language-learning-backend.com"
 ]
