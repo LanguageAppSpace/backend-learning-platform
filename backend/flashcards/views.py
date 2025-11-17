@@ -21,7 +21,7 @@ class LessonViewSet(viewsets.ModelViewSet):
         return Lesson.objects.filter(user=self.request.user.id)
 
     def perform_create(self, serializer):
-        user = self.request.user
+        user = CustomUser.objects.get(id=self.request.user.id)
         section = serializer.validated_data.get("section")
 
         if section is None:
@@ -35,7 +35,8 @@ class LessonViewSet(viewsets.ModelViewSet):
         serializer.save(user=user, section=section)
 
     def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+        user = CustomUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
 
     @action(detail=True, methods=["post"], url_path="reset-progress")
     def reset_progress(self, request, pk=None):
@@ -89,7 +90,8 @@ class SectionViewSet(viewsets.ModelViewSet):
         return Section.objects.filter(user=self.request.user.id)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user = CustomUser.objects.get(id=self.request.user.id)
+        serializer.save(user=user)
 
     @action(detail=True, methods=["get"], url_path="flashcards")
     def get_flashcards(self, request, pk=None):
