@@ -13,7 +13,7 @@ class LessonSerializer(serializers.ModelSerializer):
     phrase_pairs = PhrasePairSerializer(many=True)
     progress = serializers.SerializerMethodField()
     section = serializers.PrimaryKeyRelatedField(
-        queryset=Section.objects.none(),
+        queryset=Section.objects.all(),
         required=False,
         allow_null=True
     )
@@ -26,11 +26,15 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        request = self.context.get("request")
-        if request and request.user.is_authenticated:
+        request = self.context.get("request", None)
+        if request and hasattr(
+                request, "user"
+        ) and request.user.is_authenticated:
             self.fields["section"].queryset = Section.objects.filter(
-                user=request.user
+                user_id=request.user.id
             )
+        else:
+            self.fields["section"].queryset = Section.objects.none()
 
     def get_progress(self, obj) -> float:
         return obj.calculate_progress()
