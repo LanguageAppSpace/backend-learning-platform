@@ -1,124 +1,173 @@
-# Learning Platform
-
-
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Tests](#tests)
-- [Docker](#docker-compose)
-- [API](#api)
-- [Tools](#technologies-and-frameworks)
-- [Contributions](#contributions)
-- [License](#license)
-
+# Learning Platform – Backend (Django + Docker)
 
 ## Overview
-<div style="text-align: justify;">
-The backend for learning platform, developed using Django Rest Framework (DRF), serves as the foundation for a robust educational tool. This repository encapsulates the core functionalities essential for managing and delivering educational content efficiently. Leveraging Django's powerful features and DRF's API capabilities, the platform facilitates seamless interaction between users and educational resources.
-</div>
 
+This repository contains the backend for the **Learning Platform**, built with **Django** and **Django REST Framework (DRF)**. The application is fully containerized using **Docker** and **Docker Compose**, making local development setup fast and consistent across environments.
 
-## Features
-Basic User Functionality
-<br>
-<div style="text-align: justify;">
-The basic user functionality provides essential features for managing user accounts within the application. Users can easily register new accounts using a secure registration form, which collects necessary information such as username, email address, and password. The registration process includes validation to ensure data integrity and security. Once registered, users can log in securely using their credentials, granting them access to personalized content and features. User authentication is handled using industry-standard security practices, protecting user data from unauthorized access.
-</div>
-<br>
-Flashcards Functionality
-<br>
-<div style="text-align: justify;">
-The flashcards functionality enriches the user experience by offering a comprehensive toolset for learning and practicing with digital flashcards. Users can create and manage lessons, organizing them based on topics or categories of interest. Within each lesson, users can add custom flashcards, each containing two sides: one for the prompt and the other for the answer. The application tracks user progress automatically, providing insights into which flashcards have been learned or require further review. This progress tracking helps users optimize their study sessions and achieve learning objectives efficiently.
-</div>
+The backend provides APIs for user authentication and flashcard-based learning, including progress tracking.
 
+---
 
-## Installation
+## Tech Stack
 
-### Running project locally
-<ol>
-1. Clone the repository
-<br>
-<code>git clone https://github.com/Ewa-Anna/backend-learning-platform</code>
-<br>
-2. Change the directory
-<br>
-<code>cd backend</code>
-<br>
-3. Install dependencies
-<br>
-<code>pip install -r requirements.txt</code>
-<br>
-4. Apply database migrations
-<br>
-<code>python manage.py makemigrations</code>
-<br>
-<code>python manage.py migrate</code>
-<br>
-5. Run the project
-<br>
-<code>python manage.py runserver</code>
-<br>
-</ol>
-Project will run on http://127.0.0.1:8000/
+* **Python** 3.11
+* **Django** & **Django REST Framework**
+* **MySQL 8.0** (Dockerized)
+* **Docker & Docker Compose**
+* **Swagger / OpenAPI**
 
+---
 
-### docker-compose
-Building Docker Image
-<br>
-` docker-compose build --no-cache `
-<br>
-Running Docker Container
-<br>
-` docker-compose up -d `
+## Prerequisites
 
+Make sure you have the following installed:
 
-## API
+* Docker (>= 20.x)
+* Docker Compose (v2 recommended)
+* Git
 
-All endpoints with methods are available under http://127.0.0.1:8000/swagger/
+You do **not** need Python installed locally when using Docker.
 
+---
 
-## Tests
+## Project Structure (simplified)
 
-Move to backend folder
-<br>
-` python manage.py backend `
-<br>
-Run all tests
-<br>
-` python manage.py test `
+```text
+.
+├── backend/
+│   ├── Dockerfile.dev
+│   ├── django-setup.sh
+│   ├── manage.py
+│   └── ...
+├── docker-compose.dev.yaml
+├── .env.example
+└── README.md
+```
 
+---
 
-## Technologies and frameworks
+## Environment Variables
 
-- Backend
-    
-    [![Python](https://skillicons.dev/icons?i=python)](https://skillicons.dev) 
-    [![Django](https://skillicons.dev/icons?i=django)](https://skillicons.dev)
+Create a `.env` file in the project root (next to `docker-compose.dev.yaml`).
 
-    - Django Rest Framework
+You can use the following template as a starting point:
 
-    - drf-yasg
+```env
+# Django
+DJANGO_ENV=development
+DJANGO_SECRET_KEY=change-me
+DEBUG=True
 
-- Databases
-    - For Dev
+# Database (MySQL)
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+DB_ROOT_PASSWORD=
+DB_HOST=db
+DB_PORT=3306
 
-        [![SQLite](https://skillicons.dev/icons?i=sqlite)](https://skillicons.dev)
+# MySQL container vars
+MYSQL_ROOT_PASSWORD=
+MYSQL_DATABASE=
+MYSQL_PASSWORD=
 
-    - For Prod
-    
-        [![PostgreSQL](https://skillicons.dev/icons?i=postgres)](https://skillicons.dev)
+# App
+PORT=8080
+```
 
-- Other
+⚠️ **Never commit real secrets to the repository.**
 
-    [![VisualStudio](https://skillicons.dev/icons?i=vscode)](https://skillicons.dev)
-    [![Docker](https://skillicons.dev/icons?i=docker)](https://skillicons.dev)
-    [![Postman](https://skillicons.dev/icons?i=postman)](https://skillicons.dev)
+---
 
+## Running the Project (Docker – Recommended)
 
-## Contributions
-Contributions are welcome! Feel free to fork the repository, make changes, and submit pull requests for review.
+### 1. Clone the repository
 
+```bash
+git clone <repository-url>
+cd backend-learning-platform
+```
+
+### 2. Create `.env`
+
+```bash
+cp .env.example .env
+```
+
+Update values as needed.
+
+### 3. Build the containers
+
+```bash
+docker compose -f docker-compose.dev.yaml build
+```
+
+### 4. Start the application
+
+```bash
+docker compose -f docker-compose.dev.yaml up
+```
+
+The application will be available at:
+
+* **Backend API**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+* **Swagger UI**: [http://127.0.0.1:8000/swagger/](http://127.0.0.1:8000/swagger/)
+
+---
+
+## What Happens on Startup
+
+The `web` container runs `django-setup.sh`, which typically:
+
+* waits for the database to be ready
+* applies migrations
+* starts the Django development server
+
+(See `backend/django-setup.sh` for exact behavior.)
+
+---
+
+## Running Django Commands
+
+Run Django management commands inside the `web` container:
+
+```bash
+docker compose -f docker-compose.dev.yaml exec web python manage.py migrate
+```
+
+Create a superuser:
+
+```bash
+docker compose -f docker-compose.dev.yaml exec web python manage.py createsuperuser
+```
+
+Run tests:
+
+```bash
+docker compose -f docker-compose.dev.yaml exec web python manage.py test
+```
+
+---
+
+## Database
+
+* **Engine**: MySQL 8.0
+* **Container name**: `mysql_container`
+* **Port (local)**: `3306`
+* **Data persistence**: Docker volume `mysql_data`
+
+Database data will persist between container restarts.
+
+---
+
+## API Documentation
+
+Interactive API documentation is available via Swagger:
+
+* [http://127.0.0.1:8000/swagger/](http://127.0.0.1:8000/swagger/)
+
+---
 
 ## License
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
