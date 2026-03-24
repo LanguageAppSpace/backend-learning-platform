@@ -1,6 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+from PIL import Image
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -124,28 +125,26 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
-    photo = serializers.URLField(required=False)
-    birthdate = serializers.DateField(required=False)
-    first_name = serializers.CharField(source="user.first_name", required=False)
-    last_name = serializers.CharField(source="user.last_name", required=False)
-
     class Meta:
         model = Profile
-        fields = ("photo", "birthdate", "first_name", "last_name")
+        fields = ["photo", "birthdate"]
+
+    def validate_photo(self, value):
+        allowed_types = ["image/jpeg", "image/png"]
+        if value.content_type not in allowed_types:
+            raise serializers.ValidationError(
+                "Only JPEG and PNG images are allowed."
+            )
+        try:
+            img = Image.open(value)
+            img.verify()
+        except Exception:
+            raise serializers.ValidationError("Invalid image file.")
+
+        return value
 
     def update(self, instance, validated_data):
-        user_data = validated_data.pop("user", {})
-        profile_data = {
-            k: v for k, v in validated_data.items() if k in ("photo", "birthdate")
-        }
-
-        for attr, value in profile_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
-        user = instance.user
-        for attr, value in user_data.items():
-            setattr(user, attr, value)
-        user.save()
-
-        return instance
+        new_photo = validated_data.get("photo")
+        if new_photo and instance.photo:
+            instance.photo.delete(save=False)
+        return super().update(instance, validated_data)

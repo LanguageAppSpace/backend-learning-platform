@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.core.exceptions import ValidationError
+
+
+def validate_file_size(file):
+    max_size = 2 * 1024 * 1024  # 2MB
+    if file.size > max_size:
+        raise ValidationError("Image must be smaller than 2MB.")
 
 
 class CustomUser(AbstractUser, PermissionsMixin):
@@ -24,7 +31,12 @@ class CustomUser(AbstractUser, PermissionsMixin):
 class Profile(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    photo = models.URLField(blank=True)
+    photo = models.ImageField(
+        upload_to="profile_photos/",
+        blank=True,
+        null=True,
+        validators=[validate_file_size],
+    )
     birthdate = models.DateField(blank=True, null=True, verbose_name="Date of Birth")
 
     class Meta:
