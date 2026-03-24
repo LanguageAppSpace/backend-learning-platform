@@ -22,6 +22,7 @@ from .serializers import (
     ProfileUpdateSerializer,
 )
 from .models import CustomUser, Profile
+from .throttles import PhotoUploadThrottle
 
 
 User = get_user_model()
@@ -75,6 +76,12 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             return profile
         except Profile.DoesNotExist as exc:
             raise NotFound("Profile not found") from exc
+
+    def get_throttles(self):
+        if self.request.method in ["PATCH",
+                                   "PUT"] and "photo" in self.request.data:
+            return [PhotoUploadThrottle()]
+        return []
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
