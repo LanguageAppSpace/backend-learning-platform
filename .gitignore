@@ -91,3 +91,4 @@ cython_debug/
 .env.dev
 .envdb
 **/.DS_Store
+media/
