@@ -138,8 +138,8 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         try:
             img = Image.open(value)
             img.verify()
-        except Exception:
-            raise serializers.ValidationError("Invalid image file.")
+        except Exception as exc:
+            raise serializers.ValidationError("Invalid image file.") from exc
 
         return value
 

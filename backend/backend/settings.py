@@ -9,14 +9,16 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+# pylint: disable=wrong-import-position,wrong-import-order
 import pymysql
+
 pymysql.install_as_MySQLdb()
 
 import os
+from datetime import timedelta
+from pathlib import Path
 
 from decouple import config
-from pathlib import Path
-from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +35,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "116.203.33.149",
     "language-learning-backend.com",
-    "www.language-learning-backend.com"
+    "www.language-learning-backend.com",
 ]
 
 # Application definition
@@ -55,7 +57,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "whitenoise.runserver_nostatic"
+    "whitenoise.runserver_nostatic",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware"
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -159,7 +161,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -241,24 +243,24 @@ CORS_ALLOWED_ORIGINS = [
     "https://language-learning-backend.com",
     "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
-    "https://staging-project-language-app.netlify.app"
+    "https://staging-project-language-app.netlify.app",
 ]
 
 CSRF_ALLOWED_ORIGINS = [
-    'http://0.0.0.0:8000',
+    "http://0.0.0.0:8000",
     "https://language-learning-backend.com",
     "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
-    "https://staging-project-language-app.netlify.app"
+    "https://staging-project-language-app.netlify.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    'http://0.0.0.0:8000',
+    "http://0.0.0.0:8000",
     "https://language-learning-backend.com",
     "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
-    "https://staging-project-language-app.netlify.app"
+    "https://staging-project-language-app.netlify.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -299,7 +301,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://language-learning-backend.com",
     "https://www.language-learning-backend.com",
     "https://project-language-app.netlify.app",
-    "https://staging-project-language-app.netlify.app"
+    "https://staging-project-language-app.netlify.app",
 ]
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
@@ -309,7 +311,7 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.mailersend.net")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))   # pylint: disable=invalid-envvar-default
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
