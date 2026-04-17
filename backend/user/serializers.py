@@ -141,7 +141,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 class UserStreakSerializer(serializers.ModelSerializer):
-   class Meta:
-       model = CustomUser
-       fields = ["streak", "last_active"]
+    class Meta:
+        model = CustomUser
+        fields = ["streak", "last_active"]
 
