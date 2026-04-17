@@ -10,18 +10,20 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import CustomUser, Profile
+from .utils import get_user_from_token, NoPagination
 from .serializers import (
-    ChangePasswordSerializer,
     CustomTokenObtainPairSerializer,
-    CustomUserSerializer,
-    PasswordResetConfirmSerializer,
-    ProfileSerializer,
-    ProfileUpdateSerializer,
     RegisterSerializer,
+    ProfileSerializer,
+    ChangePasswordSerializer,
+    PasswordResetConfirmSerializer,
+    CustomUserSerializer,
+    ProfileUpdateSerializer,
+    UserStreakSerializer,
 )
+
+from .models import CustomUser, Profile
 from .throttles import PhotoUploadThrottle
-from .utils import NoPagination, get_user_from_token
 
 User = get_user_model()
 
@@ -169,3 +171,42 @@ class UserListView(generics.ListAPIView):
     def get_queryset(self):
         queryset = CustomUser.objects.all().order_by("first_name", "last_name")
         return queryset
+
+
+class UserStreakView(APIView):
+    serializer_class = UserStreakSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        serializer = UserStreakSerializer(user)
+        return Response(serializer.data)
+
+
+class UpdateStreakView(APIView):
+    serializer_class = UserStreakSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        today = date.today()
+
+        if user.streak is None:
+            user.streak = 0
+            user.last_active = today
+
+        else:
+            if user.last_active == today:
+                pass
+            elif user.last_active == today - timedelta(days=1):
+                user.streak += 1
+            else:
+                user.streak = 1
+            user.last_active = today
+
+        user.save(update_fields=["streak", "last_active"])
+        serializer = UserStreakSerializer(user)
+
+        return Response(serializer.data)

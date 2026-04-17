@@ -106,7 +106,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name", "streak", "last_active"]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -139,3 +139,9 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         if new_photo and instance.photo:
             instance.photo.delete(save=False)
         return super().update(instance, validated_data)
+
+class UserStreakSerializer(serializers.ModelSerializer):
+   class Meta:
+       model = CustomUser
+       fields = ["streak", "last_active"]
+
