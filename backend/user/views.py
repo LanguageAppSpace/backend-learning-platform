@@ -24,6 +24,7 @@ from .serializers import (
 
 from .models import CustomUser, Profile
 from .throttles import PhotoUploadThrottle
+from datetime import date, timedelta
 
 User = get_user_model()
 
@@ -193,8 +194,8 @@ class UpdateStreakView(APIView):
         user = CustomUser.objects.get(id=user_id)
         today = date.today()
 
-        if user.streak is None:
-            user.streak = 0
+        if user.streak is None or user.last_active is None:
+            user.streak = 1
             user.last_active = today
 
         else:
