@@ -13,26 +13,18 @@ class LessonSerializer(serializers.ModelSerializer):
     phrase_pairs = PhrasePairSerializer(many=True)
     progress = serializers.SerializerMethodField()
     section = serializers.PrimaryKeyRelatedField(
-        queryset=Section.objects.all(),
-        required=False,
-        allow_null=True
+        queryset=Section.objects.all(), required=False, allow_null=True
     )
 
     class Meta:
         model = Lesson
-        fields = [
-            "id", "section", "title", "description", "phrase_pairs", "progress"
-        ]
+        fields = ["id", "section", "title", "description", "phrase_pairs", "progress"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get("request", None)
-        if request and hasattr(
-                request, "user"
-        ) and request.user.is_authenticated:
-            self.fields["section"].queryset = Section.objects.filter(
-                user_id=request.user.id
-            )
+        if request and hasattr(request, "user") and request.user.is_authenticated:
+            self.fields["section"].queryset = Section.objects.filter(user_id=request.user.id)
         else:
             self.fields["section"].queryset = Section.objects.none()
 

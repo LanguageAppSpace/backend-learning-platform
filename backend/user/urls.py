@@ -1,20 +1,18 @@
 from django.urls import path
-
-from rest_framework_simplejwt.views import TokenRefreshView
-
 from django_rest_passwordreset.views import (
     reset_password_request_token,
     reset_password_validate_token,
 )
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
-    CustomTokenObtainPairView,
-    RegisterView,
-    ProfileView,
-    LogoutAPIView,
     ChangePasswordView,
+    CustomTokenObtainPairView,
     DeactivateAccountView,
+    LogoutAPIView,
     PasswordResetConfirmAPIView,
+    ProfileView,
+    RegisterView,
     UserListView,
 )
 

@@ -1,7 +1,7 @@
 import os
 
-from django.dispatch import receiver
 from django.core.mail import EmailMessage
+from django.dispatch import receiver
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from .utils import CustomTokenGenerator
@@ -10,10 +10,7 @@ custom_token_generator = CustomTokenGenerator()
 
 
 @receiver(reset_password_token_created)
-def password_reset_token_created(
-    sender, instance, reset_password_token, *args, **kwargs
-):
-
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
     custom_token = custom_token_generator.generate_token()
     reset_password_token.key = custom_token
     reset_password_token.save()

@@ -1,11 +1,9 @@
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-
+from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APIClient, APITestCase
 
 from .models import Lesson, PhrasePair
-
 
 User = get_user_model()
 
@@ -13,9 +11,7 @@ User = get_user_model()
 class LessonViewSetTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.client.force_login(self.user)
         self.lesson_data = {
             "title": "Sample Lesson",
@@ -93,9 +89,7 @@ class LessonViewSetTests(APITestCase):
 class PhrasePairUpdateViewTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.lesson = Lesson.objects.create(
             title="Lesson with PhrasePair",
             description="Lesson description",
@@ -122,9 +116,7 @@ class PhrasePairUpdateViewTests(APITestCase):
 class PhrasePairDeleteViewTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
-        )
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.lesson = Lesson.objects.create(
             title="Lesson with PhrasePair",
             description="Lesson description",

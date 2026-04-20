@@ -1,10 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from flashcards.models import Lesson, PhrasePair
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
-from flashcards.models import Lesson, PhrasePair
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from user.models import CustomUser
+
 from .serializers import UserStatisticsSerializer
 
 

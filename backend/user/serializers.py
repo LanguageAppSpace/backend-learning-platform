@@ -1,6 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-
 from PIL import Image
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -22,9 +21,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password]
-    )
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_confirm = serializers.CharField(write_only=True, required=True)
     email = serializers.EmailField(
         required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())]
@@ -65,17 +62,13 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs["new_password"] != attrs["new_password_confirm"]:
-            raise serializers.ValidationError(
-                {"new_password": "Passwords do not match."}
-            )
+            raise serializers.ValidationError({"new_password": "Passwords do not match."})
         return attrs
 
     def validate_old_password(self, value):
         user = self.context["request"].user
         if not user.check_password(value):
-            raise serializers.ValidationError(
-                {"old_password": "Old password is not correct."}
-            )
+            raise serializers.ValidationError({"old_password": "Old password is not correct."})
         return value
 
     def update(self, instance, validated_data):
@@ -132,9 +125,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     def validate_photo(self, value):
         allowed_types = ["image/jpeg", "image/png"]
         if value.content_type not in allowed_types:
-            raise serializers.ValidationError(
-                "Only JPEG and PNG images are allowed."
-            )
+            raise serializers.ValidationError("Only JPEG and PNG images are allowed.")
         try:
             img = Image.open(value)
             img.verify()

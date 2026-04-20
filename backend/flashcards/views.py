@@ -1,14 +1,12 @@
 from django.http import Http404
-
-from rest_framework import viewsets, generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
 from user.models import CustomUser
+
 from .models import Lesson, PhrasePair, Section
-from .serializers import LessonSerializer, PhrasePairSerializer, \
-    SectionSerializer
+from .serializers import LessonSerializer, PhrasePairSerializer, SectionSerializer
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -28,8 +26,7 @@ class LessonViewSet(viewsets.ModelViewSet):
             section, _ = Section.objects.get_or_create(
                 user=user,
                 title="Other",
-                defaults={
-                    "description": "Default section for unassigned lessons"},
+                defaults={"description": "Default section for unassigned lessons"},
             )
 
         serializer.save(user=user, section=section)
@@ -44,7 +41,7 @@ class LessonViewSet(viewsets.ModelViewSet):
         lesson.reset_progress()
         return Response(
             {"message": f"Progress for lesson '{lesson.title}' reset to 0%"},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
 
@@ -112,5 +109,5 @@ class SectionViewSet(viewsets.ModelViewSet):
         section.reset_progress()
         return Response(
             {"message": f"Progress for section '{section.title}' reset to 0%"},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
