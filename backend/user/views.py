@@ -1,29 +1,27 @@
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
-
-from rest_framework.exceptions import NotFound
-from rest_framework.views import APIView
 from rest_framework import generics, status
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .utils import get_user_from_token, NoPagination
-from .serializers import (
-    CustomTokenObtainPairSerializer,
-    RegisterSerializer,
-    ProfileSerializer,
-    ChangePasswordSerializer,
-    PasswordResetConfirmSerializer,
-    CustomUserSerializer,
-    ProfileUpdateSerializer,
-)
 from .models import CustomUser, Profile
+from .serializers import (
+    ChangePasswordSerializer,
+    CustomTokenObtainPairSerializer,
+    CustomUserSerializer,
+    PasswordResetConfirmSerializer,
+    ProfileSerializer,
+    ProfileUpdateSerializer,
+    RegisterSerializer,
+)
 from .throttles import PhotoUploadThrottle
-
+from .utils import NoPagination, get_user_from_token
 
 User = get_user_model()
 
@@ -78,8 +76,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
             raise NotFound("Profile not found") from exc
 
     def get_throttles(self):
-        if self.request.method in ["PATCH",
-                                   "PUT"] and "photo" in self.request.data:
+        if self.request.method in ["PATCH", "PUT"] and "photo" in self.request.data:
             return [PhotoUploadThrottle()]
         return []
 
@@ -140,9 +137,7 @@ class DeactivateAccountView(GenericAPIView):
         user.is_active = False
         user.save()
 
-        return Response(
-            {"message": "Account deactivated successfully."}, status=status.HTTP_200_OK
-        )
+        return Response({"message": "Account deactivated successfully."}, status=status.HTTP_200_OK)
 
 
 class PasswordResetConfirmAPIView(APIView):
@@ -159,16 +154,12 @@ class PasswordResetConfirmAPIView(APIView):
         user = get_user_from_token(token)
 
         if user is None:
-            return Response(
-                {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(password)
         user.save()
 
-        return Response(
-            {"success": "Password reset successfully"}, status=status.HTTP_200_OK
-        )
+        return Response({"success": "Password reset successfully"}, status=status.HTTP_200_OK)
 
 
 class UserListView(generics.ListAPIView):

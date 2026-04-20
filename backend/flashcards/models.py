@@ -8,9 +8,7 @@ DEFAULT_SECTION_COLOR = "#FFFFFF"
 
 class Section(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(
-        CustomUser, related_name="sections", on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(CustomUser, related_name="sections", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     color = models.CharField(max_length=20, default=DEFAULT_SECTION_COLOR)
@@ -43,12 +41,9 @@ class Section(models.Model):
 
 class Lesson(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(
-        CustomUser, related_name="lessons", on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(CustomUser, related_name="lessons", on_delete=models.CASCADE)
     section = models.ForeignKey(
-        Section, related_name="lessons", on_delete=models.CASCADE, null=True,
-        blank=True
+        Section, related_name="lessons", on_delete=models.CASCADE, null=True, blank=True
     )
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -69,9 +64,7 @@ class Lesson(models.Model):
 
 class PhrasePair(models.Model):
     id = models.AutoField(primary_key=True)
-    lesson = models.ForeignKey(
-        Lesson, related_name="phrase_pairs", on_delete=models.CASCADE
-    )
+    lesson = models.ForeignKey(Lesson, related_name="phrase_pairs", on_delete=models.CASCADE)
     phrase_one = models.CharField(max_length=255)
     phrase_two = models.CharField(max_length=255)
     is_learned = models.BooleanField(default=False)

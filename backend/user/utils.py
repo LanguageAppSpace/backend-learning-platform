@@ -2,12 +2,10 @@ import random
 import string
 
 from django_rest_passwordreset.models import ResetPasswordToken
-
 from rest_framework.pagination import PageNumberPagination
 
 
 class CustomTokenGenerator:
-
     def __init__(self, token_length=30):
         self.token_length = token_length
 
