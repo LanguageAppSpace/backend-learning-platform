@@ -26,6 +26,7 @@ jobs:
 
       - name: Run Tests
         env:
+          DJANGO_ENV: ci
           DJANGO_SECRET_KEY: test-secret-key
         run: |
           cd backend
