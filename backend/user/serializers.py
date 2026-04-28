@@ -140,8 +140,8 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             instance.photo.delete(save=False)
         return super().update(instance, validated_data)
 
+
 class UserStreakSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["streak", "last_active"]
-
