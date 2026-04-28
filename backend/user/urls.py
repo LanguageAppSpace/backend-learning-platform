@@ -13,9 +13,9 @@ from .views import (
     PasswordResetConfirmAPIView,
     ProfileView,
     RegisterView,
+    UpdateStreakView,
     UserListView,
     UserStreakView,
-    UpdateStreakView,
 )
 
 app_name = "user"

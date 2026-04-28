@@ -11,20 +11,21 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .utils import get_user_from_token, NoPagination
+from .models import CustomUser, Profile
 from .serializers import (
-    CustomTokenObtainPairSerializer,
-    RegisterSerializer,
-    ProfileSerializer,
     ChangePasswordSerializer,
-    PasswordResetConfirmSerializer,
+    CustomTokenObtainPairSerializer,
     CustomUserSerializer,
+    PasswordResetConfirmSerializer,
+    ProfileSerializer,
     ProfileUpdateSerializer,
+    RegisterSerializer,
     UserStreakSerializer,
 )
 
-from .models import CustomUser, Profile
 from .throttles import PhotoUploadThrottle
+from .utils import NoPagination, get_user_from_token
+
 
 User = get_user_model()
 
