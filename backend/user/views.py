@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from rest_framework import generics, status
@@ -22,10 +23,8 @@ from .serializers import (
     RegisterSerializer,
     UserStreakSerializer,
 )
-
 from .throttles import PhotoUploadThrottle
 from .utils import NoPagination, get_user_from_token
-
 
 User = get_user_model()
 
