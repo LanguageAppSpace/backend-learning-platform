@@ -1,4 +1,4 @@
-name: SSH Test
+name: Deploy to server
 
 on:
   push:
@@ -10,12 +10,14 @@ jobs:
     environment: production
 
     steps:
-      - name: Test SSH
+      - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            whoami
-            hostname
+            cd django-docker
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
