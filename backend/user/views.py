@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.contrib.auth import get_user_model, logout
 from django.middleware.csrf import get_token
 from rest_framework import generics, status
@@ -19,6 +21,7 @@ from .serializers import (
     ProfileSerializer,
     ProfileUpdateSerializer,
     RegisterSerializer,
+    UserStreakSerializer,
 )
 from .throttles import PhotoUploadThrottle
 from .utils import NoPagination, get_user_from_token
@@ -169,3 +172,42 @@ class UserListView(generics.ListAPIView):
     def get_queryset(self):
         queryset = CustomUser.objects.all().order_by("first_name", "last_name")
         return queryset
+
+
+class UserStreakView(APIView):
+    serializer_class = UserStreakSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        serializer = UserStreakSerializer(user)
+        return Response(serializer.data)
+
+
+class UpdateStreakView(APIView):
+    serializer_class = UserStreakSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.user.id
+        user = CustomUser.objects.get(id=user_id)
+        today = date.today()
+
+        if user.last_active is None:
+            user.streak = 1
+            user.last_active = today
+
+        else:
+            if user.last_active == today:
+                pass
+            elif user.last_active == today - timedelta(days=1):
+                user.streak += 1
+            else:
+                user.streak = 1
+            user.last_active = today
+
+        user.save(update_fields=["streak", "last_active"])
+        serializer = UserStreakSerializer(user)
+
+        return Response(serializer.data)
