@@ -194,7 +194,7 @@ class UpdateStreakView(APIView):
         user = CustomUser.objects.get(id=user_id)
         today = date.today()
 
-        if user.streak is None or user.last_active is None:
+        if user.last_active is None:
             user.streak = 1
             user.last_active = today
 
