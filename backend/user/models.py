@@ -21,6 +21,9 @@ class CustomUser(AbstractUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
+    streak = models.IntegerField(default=0)
+    last_active = models.DateField(null=True, blank=True)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
