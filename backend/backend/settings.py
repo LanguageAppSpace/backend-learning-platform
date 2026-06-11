@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     "language-learning-backend.com",
     "www.language-learning-backend.com",
 ]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
