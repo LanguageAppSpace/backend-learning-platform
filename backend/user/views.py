@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -140,6 +141,14 @@ class DeactivateAccountView(GenericAPIView):
         user.is_active = False
         user.save()
 
+        refresh_token = request.data.get("refresh")
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except TokenError:
+                pass
         return Response({"message": "Account deactivated successfully."}, status=status.HTTP_200_OK)
 
 
