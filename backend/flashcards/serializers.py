@@ -18,7 +18,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ["id", "section", "title", "description", "phrase_pairs", "progress"]
+        fields = ["id", "section", "title", "description", "created_at", "phrase_pairs", "progress"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
