@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from .models import Lesson, PhrasePair
+from .repetition_service import mark_incorrect, schedule_next_review
 
 User = get_user_model()
 
@@ -135,3 +137,45 @@ class PhrasePairDeleteViewTests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(PhrasePair.objects.count(), 0)
+
+
+class RepetitionServiceTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="password",
+        )
+
+        self.lesson = Lesson.objects.create(
+            title="Lesson",
+            description="Description",
+            user=self.user,
+        )
+
+        self.card = PhrasePair.objects.create(
+            lesson=self.lesson,
+            phrase_one="Hello",
+            phrase_two="Hola",
+        )
+
+    def test_schedule_next_review(self):
+        schedule_next_review(self.card)
+
+        self.card.refresh_from_db()
+
+        self.assertEqual(self.card.review_stage, 1)
+        self.assertIsNotNone(self.card.last_reviewed)
+        self.assertIsNotNone(self.card.next_review)
+        self.assertGreater(self.card.next_review, timezone.now())
+
+    def test_mark_incorrect(self):
+        self.card.review_stage = 4
+        self.card.save()
+
+        mark_incorrect(self.card)
+
+        self.card.refresh_from_db()
+
+        self.assertEqual(self.card.review_stage, 0)
+        self.assertIsNotNone(self.card.last_reviewed)
+        self.assertIsNotNone(self.card.next_review)

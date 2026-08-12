@@ -111,3 +111,13 @@ class SectionViewSet(viewsets.ModelViewSet):
             {"message": f"Progress for section '{section.title}' reset to 0%"},
             status=status.HTTP_200_OK,
         )
+
+    @action(detail=True, methods=["get"], url_path="review")
+    def review(self, request, pk=None):
+        section = self.get_object()
+
+        serializer = PhrasePairSerializer(
+            section.review_count(),
+            many=True,
+        )
+        return Response(serializer.data)
