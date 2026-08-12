@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Lesson, PhrasePair, Section
+from .repetition_service import mark_incorrect, schedule_next_review
 
 
 class PhrasePairSerializer(serializers.ModelSerializer):
@@ -18,7 +19,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ["id", "section", "title", "description", "phrase_pairs", "progress"]
+        fields = ["id", "section", "title", "description", "created_at", "phrase_pairs", "progress"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -59,10 +60,25 @@ class LessonSerializer(serializers.ModelSerializer):
                         phrase_pair.phrase_two = phrase_pair_data.get(
                             "phrase_two", phrase_pair.phrase_two
                         )
+                        was_previously_learned = phrase_pair.is_learned
+
+                        phrase_pair.phrase_one = phrase_pair_data.get(
+                            "phrase_one", phrase_pair.phrase_one
+                        )
+                        phrase_pair.phrase_two = phrase_pair_data.get(
+                            "phrase_two", phrase_pair.phrase_two
+                        )
                         phrase_pair.is_learned = phrase_pair_data.get(
                             "is_learned", phrase_pair.is_learned
                         )
+
                         phrase_pair.save()
+
+                        if not was_previously_learned and phrase_pair.is_learned:
+                            schedule_next_review(phrase_pair)
+
+                        elif was_previously_learned and not phrase_pair.is_learned:
+                            mark_incorrect(phrase_pair)
                     except PhrasePair.DoesNotExist:
                         PhrasePair.objects.create(lesson=instance, **phrase_pair_data)
                 else:
@@ -74,10 +90,14 @@ class LessonSerializer(serializers.ModelSerializer):
 class SectionSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
     progress = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
-        fields = ["id", "title", "description", "color", "progress", "lessons"]
+        fields = ["id", "title", "description", "color", "progress", "review_count", "lessons"]
 
     def get_progress(self, obj):
         return obj.calculate_progress()
+
+    def get_review_count(self, obj):
+        return obj.review_count()

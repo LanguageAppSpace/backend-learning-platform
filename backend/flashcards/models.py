@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from user.models import CustomUser
 
 DEFAULT_SECTION_COLOR = "#FFFFFF"
@@ -38,6 +39,14 @@ class Section(models.Model):
         """
         PhrasePair.objects.filter(lesson__section=self).update(is_learned=False)
 
+    def review_count(self):
+        """
+        Count how many flashcards are scheduled for review.
+        """
+        return PhrasePair.objects.filter(
+            lesson__section=self, next_review__lte=timezone.now()
+        ).count()
+
 
 class Lesson(models.Model):
     id = models.AutoField(primary_key=True)
@@ -47,6 +56,7 @@ class Lesson(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Lesson title: {self.title}"
@@ -68,6 +78,10 @@ class PhrasePair(models.Model):
     phrase_one = models.CharField(max_length=255)
     phrase_two = models.CharField(max_length=255)
     is_learned = models.BooleanField(default=False)
+
+    review_stage = models.PositiveSmallIntegerField(default=0)
+    last_reviewed = models.DateTimeField(null=True, blank=True)
+    next_review = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.phrase_one} - {self.phrase_two}"
