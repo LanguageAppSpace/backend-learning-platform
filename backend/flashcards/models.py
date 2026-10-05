@@ -47,6 +47,14 @@ class Section(models.Model):
             lesson__section=self, next_review__lte=timezone.now()
         ).count()
 
+    def get_review_cards(self):
+        return PhrasePair.objects.filter(
+            lesson__section=self,
+            is_learned=True,
+            next_review__isnull=False,
+            next_review__lte=timezone.now(),
+        )
+
 
 class Lesson(models.Model):
     id = models.AutoField(primary_key=True)

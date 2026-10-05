@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from user.models import CustomUser
 
 from .models import Lesson, PhrasePair, Section
+from .repetition_service import schedule_next_review
 from .serializers import LessonSerializer, PhrasePairSerializer, SectionSerializer
 
 
@@ -57,6 +58,13 @@ class PhrasePairUpdateView(generics.UpdateAPIView):
             return self.queryset.get(id=pair_id, lesson_id=lesson_id)
         except PhrasePair.DoesNotExist as exc:
             raise Http404("Phrase pair does not exist.") from exc
+
+    def perform_update(self, serializer):
+        was_learned = serializer.instance.is_learned
+        card = serializer.save()
+
+        if not was_learned and card.is_learned:
+            schedule_next_review(card)
 
 
 class PhrasePairDeleteView(generics.DestroyAPIView):
@@ -115,9 +123,6 @@ class SectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="review")
     def review(self, request, pk=None):
         section = self.get_object()
-
-        serializer = PhrasePairSerializer(
-            section.review_count(),
-            many=True,
-        )
+        flashcards = section.get_review_cards()
+        serializer = PhrasePairSerializer(flashcards, many=True)
         return Response(serializer.data)
