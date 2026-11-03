@@ -1,4 +1,5 @@
 from django.http import Http404
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -16,8 +17,34 @@ class LessonViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "delete", "head", "options", "patch"]
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="tag",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Filter lessons by tag name",
+                required=False,
+                many=True,
+                style="form",
+                explode=True,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def get_queryset(self):
-        return Lesson.objects.filter(user=self.request.user.id)
+        queryset = Lesson.objects.filter(user_id=self.request.user.id)
+
+        tags = self.request.query_params.getlist("tag")
+
+        for tag in tags:
+            tag = tag.strip()
+            if tag:
+                queryset = queryset.filter(tags__name__iexact=tag)
+
+        return queryset.distinct()
 
     def perform_create(self, serializer):
         user = CustomUser.objects.get(id=self.request.user.id)

@@ -56,6 +56,26 @@ class Section(models.Model):
         )
 
 
+class Tag(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        related_name="tags",
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "name"],
+                name="unique_tag_per_user",
+            )
+        ]
+
+    def __str__(self):
+        return self.name
+
+
 class Lesson(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, related_name="lessons", on_delete=models.CASCADE)
@@ -65,6 +85,11 @@ class Lesson(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="lessons",
+        blank=True,
+    )
 
     def __str__(self):
         return f"Lesson title: {self.title}"
