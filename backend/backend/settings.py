@@ -28,7 +28,7 @@ ENVIRONMENT = os.environ.get("DJANGO_ENV", default="development")
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "ci-secret-key")
 
-DEBUG = os.environ.get("DEBUG", "0") == "1"
+DEBUG = os.environ.get("DEBUG", "0").lower() in ("1", "true", "yes")
 
 ALLOWED_HOSTS = [
     "0.0.0.0",
