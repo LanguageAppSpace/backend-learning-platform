@@ -90,6 +90,9 @@ class Lesson(models.Model):
         related_name="lessons",
         blank=True,
     )
+    is_language_lesson = models.BooleanField(default=False)
+    source_language = models.CharField(max_length=50, blank=True, default="")
+    target_language = models.CharField(max_length=50, blank=True, default="")
 
     def __str__(self):
         return f"Lesson title: {self.title}"

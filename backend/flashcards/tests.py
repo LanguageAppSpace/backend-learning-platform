@@ -133,6 +133,209 @@ class LessonViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["progress"], 40)
 
+    def test_create_language_lesson(self):
+        url = reverse("flashcards:lesson-list")
+
+        data = {
+            **self.lesson_data,
+            "is_language_lesson": True,
+            "source_language": "English",
+            "target_language": "Spanish",
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        lesson = Lesson.objects.get(title="Sample Lesson")
+
+        self.assertTrue(lesson.is_language_lesson)
+        self.assertEqual(lesson.source_language, "English")
+        self.assertEqual(lesson.target_language, "Spanish")
+
+    def test_create_regular_lesson(self):
+        url = reverse("flashcards:lesson-list")
+
+        response = self.client.post(
+            url,
+            self.lesson_data,
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        lesson = Lesson.objects.get(title="Sample Lesson")
+
+        self.assertFalse(lesson.is_language_lesson)
+        self.assertEqual(lesson.source_language, "")
+        self.assertEqual(lesson.target_language, "")
+
+    def test_create_language_lesson_without_source_language(self):
+        url = reverse("flashcards:lesson-list")
+
+        data = {
+            **self.lesson_data,
+            "is_language_lesson": True,
+            "source_language": "",
+            "target_language": "Spanish",
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("source_language", response.data)
+
+    def test_create_language_lesson_without_target_language(self):
+        url = reverse("flashcards:lesson-list")
+
+        data = {
+            **self.lesson_data,
+            "is_language_lesson": True,
+            "source_language": "English",
+            "target_language": "",
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("target_language", response.data)
+
+    def test_create_language_lesson_with_same_languages(self):
+        url = reverse("flashcards:lesson-list")
+
+        data = {
+            **self.lesson_data,
+            "is_language_lesson": True,
+            "source_language": "English",
+            "target_language": "English",
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("target_language", response.data)
+
+    def test_update_language_lesson(self):
+        self.lesson.is_language_lesson = True
+        self.lesson.source_language = "English"
+        self.lesson.target_language = "Spanish"
+        self.lesson.save()
+
+        url = reverse(
+            "flashcards:lesson-detail",
+            kwargs={"pk": self.lesson.id},
+        )
+
+        response = self.client.patch(
+            url,
+            {
+                "source_language": "English",
+                "target_language": "French",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.lesson.refresh_from_db()
+
+        self.assertTrue(self.lesson.is_language_lesson)
+        self.assertEqual(self.lesson.source_language, "English")
+        self.assertEqual(self.lesson.target_language, "French")
+
+    def test_update_lesson_enable_language_mode(self):
+        url = reverse(
+            "flashcards:lesson-detail",
+            kwargs={"pk": self.lesson.id},
+        )
+
+        response = self.client.patch(
+            url,
+            {
+                "is_language_lesson": True,
+                "source_language": "English",
+                "target_language": "Spanish",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.lesson.refresh_from_db()
+
+        self.assertTrue(self.lesson.is_language_lesson)
+        self.assertEqual(self.lesson.source_language, "English")
+        self.assertEqual(self.lesson.target_language, "Spanish")
+
+    def test_update_language_lesson_with_invalid_languages(self):
+        self.lesson.is_language_lesson = True
+        self.lesson.source_language = "English"
+        self.lesson.target_language = "Spanish"
+        self.lesson.save()
+
+        url = reverse(
+            "flashcards:lesson-detail",
+            kwargs={"pk": self.lesson.id},
+        )
+
+        response = self.client.patch(
+            url,
+            {
+                "target_language": "English",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("target_language", response.data)
+
+    def test_disable_language_lesson(self):
+        self.lesson.is_language_lesson = True
+        self.lesson.source_language = "English"
+        self.lesson.target_language = "Spanish"
+        self.lesson.save()
+
+        url = reverse(
+            "flashcards:lesson-detail",
+            kwargs={"pk": self.lesson.id},
+        )
+
+        response = self.client.patch(
+            url,
+            {
+                "is_language_lesson": False,
+                "source_language": "",
+                "target_language": "",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.lesson.refresh_from_db()
+
+        self.assertFalse(self.lesson.is_language_lesson)
+        self.assertEqual(self.lesson.source_language, "")
+        self.assertEqual(self.lesson.target_language, "")
+
+    def test_language_fields_are_returned_in_lesson_detail(self):
+        self.lesson.is_language_lesson = True
+        self.lesson.source_language = "English"
+        self.lesson.target_language = "Spanish"
+        self.lesson.save()
+
+        url = reverse(
+            "flashcards:lesson-detail",
+            kwargs={"pk": self.lesson.id},
+        )
+
+        response = self.client.get(url, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["is_language_lesson"])
+        self.assertEqual(response.data["source_language"], "English")
+        self.assertEqual(response.data["target_language"], "Spanish")
+
 
 class PhrasePairUpdateViewTests(APITestCase):
     def setUp(self):
