@@ -34,6 +34,9 @@ class LessonSerializer(serializers.ModelSerializer):
             "phrase_pairs",
             "progress",
             "tags",
+            "is_language_lesson",
+            "source_language",
+            "target_language",
         ]
         read_only_fields = ["id", "created_at", "progress"]
 
@@ -77,6 +80,37 @@ class LessonSerializer(serializers.ModelSerializer):
 
         return tags
 
+    def validate(self, attrs):
+        is_language_lesson = attrs.get(
+            "is_language_lesson", getattr(self.instance, "is_language_lesson", False)
+        )
+
+        source_language = attrs.get(
+            "source_language", getattr(self.instance, "source_language", "")
+        )
+
+        target_language = attrs.get(
+            "target_language", getattr(self.instance, "target_language", "")
+        )
+
+        if is_language_lesson:
+            if not source_language:
+                raise serializers.ValidationError(
+                    {"source_language": "Source language is required."}
+                )
+
+            if not target_language:
+                raise serializers.ValidationError(
+                    {"target_language": "Target language is required."}
+                )
+
+            if source_language == target_language:
+                raise serializers.ValidationError(
+                    {"target_language": "Source and target languages must be different."}
+                )
+
+        return attrs
+
     def create(self, validated_data):
         phrase_pairs_data = validated_data.pop("phrase_pairs", [])
         tag_names = validated_data.pop("tags", [])
@@ -94,6 +128,12 @@ class LessonSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get("title", instance.title)
         instance.description = validated_data.get("description", instance.description)
         instance.section = validated_data.get("section", instance.section)
+        instance.is_language_lesson = validated_data.get(
+            "is_language_lesson", instance.is_language_lesson
+        )
+        instance.source_language = validated_data.get("source_language", instance.source_language)
+        instance.target_language = validated_data.get("target_language", instance.target_language)
+
         instance.save()
 
         if tag_names is not None:
