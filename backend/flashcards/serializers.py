@@ -106,7 +106,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
             if source_language == target_language:
                 raise serializers.ValidationError(
-                    {"target_language": "Source and target languages must be " "different."}
+                    {"target_language": "Source and target languages must be different."}
                 )
 
         return attrs
